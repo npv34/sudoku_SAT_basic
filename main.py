@@ -1,4 +1,4 @@
-import pysat.solvers
+from pysat.solvers import Glucose3
 import math
 
 
