@@ -1,6 +1,6 @@
 from pysat.solvers import Glucose3
 import math
-
+import time
 
 def exact_one(variables: []):
     global variables_count1
@@ -87,32 +87,69 @@ def sat_solver():
 
 
 def solve():
+    startTime = time.time()
     handle_cell_constraint()
     handle_row_constraint()
     handle_column_constraint()
     handle_block_constraint()
+    numberOfClause = len(clauses)
+
     print()
     add_clues()
 
     result, satisfiable = sat_solver()
-    for row in result:
-        print(row)
+    numberOfClauseTotal = len(clauses)
+    stopTime = time.time()
+    return {
+        'satisfiable': satisfiable,
+        'result': result,
+        'numberOfVariable': variables_count + variables_count1,
+        'numberOfClause': numberOfClause,
+        'numberOfClauseTotal': numberOfClauseTotal,
+        'timeInSecond': stopTime - startTime}
+
+    # for row in result:
+    #     print(row)
 
 
-block = 3
-size = block * block
-variables_count = size ** 3
-variables_count1 = 0
+# block = 3
+# size = block * block
+# variables_count = size ** 3
+# variables_count1 = 0
+#
+# fileName = "sudoku_16x16.txt"
+# clues = []
+# clauses = []
+#
+# with open(fileName, "r") as f:
+#     for line in f.readlines():
+#         if not line.strip():
+#             continue
+#         clue = line.strip().split(",")
+#         clues.append(clue)
+#
+# solve()
+if __name__ == '__main__':
+    block = 5
+    size = block * block
+    variables_count = size ** 3
+    variables_count1 = 0
+    clues = []
+    clauses = []
+    input = []
 
-fileName = "sudoku_16x16.txt"
-clues = []
-clauses = []
+    mode = 1
 
-with open(fileName, "r") as f:
-    for line in f.readlines():
-        if not line.strip():
-            continue
-        clue = line.strip().split(",")
-        clues.append(clue)
+    with open("sudoku_25x25.txt", "r") as f:
+        for line in f.readlines():
+                if not line.strip():
+                    continue
+                clue = line.strip().split(",")
+                clues.append(clue)
 
-solve()
+    result = solve()
+
+    print(result)
+    if (result['satisfiable']):
+        for row in result['result']:
+            print(row)
